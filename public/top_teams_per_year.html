@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Top 5 Teams</title>
+  <link rel="stylesheet" href="new_project.css">
+
+</head>
+
+<script>
+  function getTopTeams() {
+    const season = document.getElementById("seasonInput").value.trim();
+
+    if (!season || isNaN(season)) {
+      alert("Please enter a valid year (e.g. 2021)");
+      return;
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.withCredentials = false;
+
+    xhr.addEventListener('readystatechange', function () {
+      if (this.readyState === XMLHttpRequest.DONE) {
+        if (this.status === 200) {
+          const data = JSON.parse(this.responseText);
+          const standings = data.response;
+
+          const sorted = standings.sort((a, b) => b.win.total - a.win.total);
+          const top5 = sorted.slice(0, 5);
+          const tableBody = document.querySelector("#top-teams-table tbody");
+          tableBody.innerHTML = ""; 
+
+          top5.forEach((team, index) => {
+            const row = document.createElement("tr");
+            const teamName = team.team.name;
+            const wins = team.win.total;
+            const losses = team.loss.total;
+            const logo = team.team.logo;
+
+            row.innerHTML = `
+              <td>${index + 1}</td>
+              <td>${teamName}</td>
+              <td><img src="${logo}" alt="${teamName} Logo" width="40" height="40"/></td>
+              <td>${wins}</td>
+              <td>${losses}</td>
+            `;
+
+            tableBody.appendChild(row);
+          });
+
+        } else {
+          console.error(`Request failed. Status: ${this.status}`);
+          alert("Failed to fetch standings. Try another year.");
+        }
+      }
+    });
+
+    xhr.open('GET', `https://api-nba-v1.p.rapidapi.com/standings?league=standard&season=${season}`);
+    xhr.setRequestHeader('x-rapidapi-key', '45377056b4msh0229f72ae14817bp18e16djsnd20b5d621794');
+    xhr.setRequestHeader('x-rapidapi-host', 'api-nba-v1.p.rapidapi.com');
+    xhr.send();
+  }
+
+</script>
+
+<body class="main-body">
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <h1 class="navbar-title">NBA Stats Hub</h1>
+      <div class="navbar-links">
+        <a href="home.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="teams.html" class="nav-link">NBA Teams</a>
+        <a href="player.html" class="nav-link">Search Player</a>
+        <a href="ranking.html" class="nav-link">Rankings</a>
+        <a href="top_teams_per_year.html" class="nav-link">Top 5 Teams!</a>
+      </div>
+    </div>
+  </nav>
+
+ <h2>Top 5 Teams - Wins vs Losses</h2>
+<div class="search-container">
+    <label for="seasonInput">Enter NBA Season From 2019-2024</label>
+    <input type="number" id="seasonInput" min="2000" max="2025" required/>
+    <button onclick="getTopTeams()">Search Season</button>
+  </div>
+  
+
+<table id="top-teams-table" class = "table_teams">
+  <thead>
+    <tr>
+      <th>Rank</th>
+      <th>Team</th>
+      <th>Logo</th>
+      <th>Wins</th>
+      <th>Losses</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+</body>
+</html>

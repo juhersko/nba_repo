@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search for Player</title>
+
+<body>
+<link rel="stylesheet" href="new_project.css">
+  <script src="script.js" defer></script> 
+
+</head>
+<body class="main-body">
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <h1 class="navbar-title">NBA Stats Hub</h1>
+      <div class="navbar-links">
+        <a href="home.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="teams.html" class="nav-link">NBA Teams</a>
+        <a href="player.html" class="nav-link">Search Player</a>
+        <a href="ranking.html" class="nav-link">Rankings</a>
+        <a href="top_teams_per_year.html" class="nav-link"> Top 5 Teams!</a>
+
+      </div>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <section>
+      <h2 class="section-title">Rank Your Favorite NBA Player (1-5)</h2>
+      <h4> 5 being your most favorite and 1 being your least favorite </h4>
+      <input type="text" id="playerName" placeholder="Enter player name" />
+      <input type="number" id="playerRanking" placeholder="(1-5)" min="1" max="5" />
+      <button onclick="submitRanking()">Submit Ranking</button>
+    </section>
+
+    <section>
+      <h2 class="section-title">Player Rankings</h2>
+      <ul id="rankingList"></ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a href="https://www.balldontlie.io/" class="footer-link" target="_blank">Ball Don't Lie API</a>
+  </footer>
+
+  <script>
+    async function submitRanking() {
+      const name = document.getElementById('playerName').value;
+      const ranking = parseInt(document.getElementById('playerRanking').value);
+
+      if (!name || !ranking || ranking < 1 || ranking > 5) {
+        alert("Please enter a valid player name and ranking between 1 and 5.");
+        return;
+      }
+
+      await fetch('http://localhost:3000/rankings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ player_name: name, rating: ranking })
+      });
+
+      document.getElementById('playerName').value = '';
+      document.getElementById('playerRanking').value = '';
+      loadRankings();
+    }
+
+    async function loadRankings() {
+      const response = await fetch('http://localhost:3000/rankings');
+      // const data = await response.json();
+      const data = await response.json();
+if (!Array.isArray(data)) {
+  console.error('Expected an array but got:', data);
+  return;
+}
+      const list = document.getElementById('rankingList');
+      list.innerHTML = '';
+      data.forEach(r => {
+        const li = document.createElement('li');
+        li.textContent = `${r.player_name} - Ranking: ${r.rating}`;
+
+        list.appendChild(li);
+      });
+    }
+
+
+    window.onload = loadRankings;
+  </script>
+</body>
+</html>

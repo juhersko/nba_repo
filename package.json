@@ -1,0 +1,23 @@
+{
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.6",
+    "body-parser": "^2.2.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.6"
+  },
+  "name": "final_project_nba",
+  "version": "1.0.0",
+  "description": "Justin Herskowitz & Marco Lapcevic",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Justin & Marco",
+  "license": "ISC"
+}
