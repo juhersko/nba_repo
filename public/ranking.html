@@ -47,6 +47,7 @@
   </footer>
 
   <script>
+      var host = window.location.origin;
     async function submitRanking() {
       const name = document.getElementById('playerName').value;
       const ranking = parseInt(document.getElementById('playerRanking').value);
@@ -56,7 +57,7 @@
         return;
       }
 
-      await fetch('http://localhost:3000/rankings', {
+      await fetch(`${host}/rankings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ player_name: name, rating: ranking })
@@ -68,7 +69,7 @@
     }
 
     async function loadRankings() {
-      const response = await fetch('http://localhost:3000/rankings');
+      const response = await fetch(`${host}/rankings`)
       // const data = await response.json();
       const data = await response.json();
 if (!Array.isArray(data)) {
