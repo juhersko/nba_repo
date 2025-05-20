@@ -50,8 +50,9 @@ app.post('/rankings', async (req, res) => {
 app.get('/rankings', async (req, res) => {
   const { data, error } = await supabase
     .from('rankings')
-    .select('*')
+    .select('player_name, rating')
     .order('rating', { ascending: false });
+    console.log("error", error);
 
   if (error) return res.status(500).json({ error });
   res.status(200).json(data);
